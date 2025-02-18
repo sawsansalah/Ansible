@@ -1,0 +1,6 @@
+- name: Setup Single-Node Kubernetes Cluster
+  hosts: k8s
+  become: yes
+  roles:
+    - common
+    - master
