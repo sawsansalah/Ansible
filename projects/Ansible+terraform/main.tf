@@ -19,7 +19,7 @@ connection {
 type = "ssh"
 host = aws_instance.ec2_instance[count.index].public_ip
 user = "ubuntu"
-private_key = file("/home/ubuntu/T/DevOps.pem")
+private_key = file("/home/ubuntu/devops.pem")
 }
 provisioner "file" {
 source = "/home/ubuntu/.ssh/id_ed25519.pub"
