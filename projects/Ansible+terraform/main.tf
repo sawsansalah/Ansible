@@ -41,7 +41,7 @@ connection {
 type = "ssh"
 host = aws_instance.ec2_instance[count.index].public_ip
 user = "ubuntu"
-private_key = file("/home/ubuntu/PK/DevOps.pem")
+private_key = file("/home/ubuntu/Devops.pem")
 }
 provisioner "remote-exec" {
 inline = [
