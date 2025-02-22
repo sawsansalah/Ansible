@@ -8,7 +8,7 @@ ami = var.ami_id
 subnet_id = var.subnet_id
 instance_type = var.instance_type
 key_name = var.ami_key_pair_name
-security_groups = ["sg-0f767baf3e3df0e07"]
+security_groups = ["sg-0cf902cf7de5fd4dd"]
 tags = {
 Name = "${var.instance_name}-${count.index + 1}" # Unique name for each instance
 }
