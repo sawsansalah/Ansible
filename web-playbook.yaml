@@ -1,0 +1,17 @@
+
+- name: webserver configration ###nanme of webserver
+  become: yes ### root user
+  hosts: webserver
+  tasks:
+    - name: install apache
+      apt:  ## name of module
+         name: apache2
+         state: latest
+    - name: install maven
+      apt:  ## name of module
+         name: maven
+         state: latest
+
+       
+
+

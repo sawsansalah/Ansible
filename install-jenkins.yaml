@@ -1,0 +1,43 @@
+---
+- name : install and configure Jenkins
+  hosts: web
+  become: true 
+  tasks:
+    - name: update apt package 
+      apt:
+      update_cache: yes
+
+    - name: Install the package "java 21"
+      ansible.builtin.apt:
+        name: openjdk-21-jre
+        state: present
+
+    - name: Add Jenkins repository key
+      ansible.builtin.apt_key:
+        url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
+        state: present
+
+    - name: update apt package 
+      apt:
+      update_cache: yes
+
+    - name: instal jenkins 
+      ansible.builtin.apt:
+        name: jenkins
+        state: present
+
+    - name: Enable jenkins
+      ansible.builtin.systemd_service:
+        name: jenkins
+        state: started
+        enabled: true    
+
+    - name: Display jenkins inital admib
+  
+      ansible.builtin.command: cat  /var/lib/jenkins/secrets/initialAdminPassword 
+      register: admin_password
+    
+    - name: Display admin pwd
+      ansible.builtin.debug:
+        msg: "intall Admin password {{ admin_password.stdout }}"
+

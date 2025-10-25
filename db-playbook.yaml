@@ -1,0 +1,20 @@
+
+- name: Db server configration
+  become: yes ### root user
+  hosts: Db
+  tasks:
+    - name: install postgress
+      apt:  ## name of module
+         name: postgressql
+         state: present
+    - name: install user
+      user:  ## name of module
+         name: postgress
+         create_home: yes
+         generate_ssh_key: yes
+         ssh_key_bits: 2048
+         ssh_key_file: .ssh/id_rsa
+
+       
+
+
