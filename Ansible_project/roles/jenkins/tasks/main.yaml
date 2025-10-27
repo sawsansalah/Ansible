@@ -1,7 +1,7 @@
 ---
 - name: update apt package
   apt:
-  update_cache: yes
+    update_cache: yes
 
 - name: Install the package "java 21"
   ansible.builtin.apt:
