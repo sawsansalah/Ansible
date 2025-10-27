@@ -1,22 +1,27 @@
 {% macro sslconf(config) %}
 {% include './templates/snippets/' ~ 'ssl_{}.conf.j2'.format(config) %}
 {% endmacro %}
+
+# ==========================
+# NGINX CONFIGURATION TEMPLATE
+# ==========================
+
 user  {{ nginx_user | default('www-data') }};
 
 error_log  {{ nginx_error_log | default('/var/log/nginx/error.log') }};
 
 {% block worker %}
-worker_processes  {{ nginx_worker_processes }};
+worker_processes  {{ nginx_worker_processes | default('auto') }};
 {% endblock %}
 
-{% if nginx_extra_conf_options %}
-{{ nginx_extra_conf_options }}
+{% if nginx_extra_conf_options is defined %}
+{{ nginx_extra_conf_options | default('') }}
 {% endif %}
 
 {% block events %}
 events {
-    worker_connections  {{ nginx_worker_connections }};
-    multi_accept {{ nginx_multi_accept }};
+    worker_connections  {{ nginx_worker_connections | default(1024) }};
+    multi_accept {{ nginx_multi_accept | default('on') }};
 }
 {% endblock %}
 
@@ -24,26 +29,27 @@ http {
     {% block http_begin %}{% endblock %}
 
 {% block http_basic %}
-    include       {{ nginx_mime_file_path }};
+    include       {{ nginx_mime_file_path | default('/etc/nginx/mime.types') }};
     default_type  application/octet-stream;
 
-    server_names_hash_bucket_size {{ nginx_server_names_hash_bucket_size }};
+    server_names_hash_bucket_size {{ nginx_server_names_hash_bucket_size | default(64) }};
 
-    client_max_body_size {{ nginx_client_max_body_size }};
+    client_max_body_size {{ nginx_client_max_body_size | default('10m') }};
 
-    log_format  main  {{ nginx_log_format|indent(23) }};
+    log_format  main  {{ nginx_log_format | default("'$remote_addr - $remote_user [$time_local] \"$request\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\" \"$http_x_forwarded_for\"'") | indent(23) }};
 
-    access_log  {{ nginx_access_log }};
+    access_log  {{ nginx_access_log | default('/var/log/nginx/access.log') }};
 
-    sendfile        {{ nginx_sendfile }};
-    tcp_nopush      {{ nginx_tcp_nopush }};
-    tcp_nodelay     {{ nginx_tcp_nodelay }};
+    sendfile        {{ nginx_sendfile | default('on') }};
+    tcp_nopush      {{ nginx_tcp_nopush | default('on') }};
+    tcp_nodelay     {{ nginx_tcp_nodelay | default('on') }};
 
-    keepalive_timeout  {{ nginx_keepalive_timeout }};
-    keepalive_requests {{ nginx_keepalive_requests }};
+    keepalive_timeout  {{ nginx_keepalive_timeout | default(65) }};
+    keepalive_requests {{ nginx_keepalive_requests | default(100) }};
 
-    server_tokens {{ nginx_server_tokens }};
-{% if nginx_proxy_cache_path %}
+    server_tokens {{ nginx_server_tokens | default('off') }};
+
+{% if nginx_proxy_cache_path is defined and nginx_proxy_cache_path %}
     proxy_cache_path {{ nginx_proxy_cache_path }};
 {% endif %}
 {% endblock %}
@@ -52,17 +58,17 @@ http {
     # gzip on;
 {% endblock %}
 
-{% if nginx_extra_http_options %}
-    {{ nginx_extra_http_options|indent(4, False) }}
+{% if nginx_extra_http_options is defined %}
+    {{ nginx_extra_http_options | default('') | indent(4, False) }}
 {% endif %}
 
 {% block http_upstream %}
-{% for upstream in nginx_upstreams %}
-    upstream {{ upstream.name }} {
+{% for upstream in nginx_upstreams | default([]) %}
+    upstream {{ upstream.name | default('backend') }} {
 {% if upstream.strategy is defined %}
         {{ upstream.strategy }};
 {% endif %}
-{% for server in upstream.servers %}
+{% for server in upstream.servers | default([]) %}
         server {{ server }};
 {% endfor %}
 {% if upstream.keepalive is defined %}
@@ -72,15 +78,16 @@ http {
 {% endfor %}
 {% endblock %}
 
-    {{ sslconf(nginx_ssl_config | default(nginx_default_ssl_config)) | indent(4) }}
+    {{ sslconf(nginx_ssl_config | default(nginx_default_ssl_config | default('default'))) | indent(4) }}
 
 {% block http_includes %}
-    include {{ nginx_conf_path }}/*.conf;
-{% if nginx_conf_path != nginx_vhost_path %}
-    include {{ nginx_vhost_path }}/*;
+    include {{ nginx_conf_path | default('/etc/nginx/conf.d') }}/*.conf;
+{% if (nginx_conf_path | default('/etc/nginx/conf.d')) != (nginx_vhost_path | default('/etc/nginx/sites-enabled')) %}
+    include {{ nginx_vhost_path | default('/etc/nginx/sites-enabled') }}/*;
 {% endif %}
 {% endblock %}
 
     {% block http_end %}{% endblock %}
-
 }
+
+
