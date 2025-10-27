@@ -4,7 +4,6 @@
 user  {{ nginx_user | default('www-data') }};
 
 error_log  {{ nginx_error_log | default('/var/log/nginx/error.log') }};
-pid        {{ nginx_pidfile }};
 
 {% block worker %}
 worker_processes  {{ nginx_worker_processes }};
