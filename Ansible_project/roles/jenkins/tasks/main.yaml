@@ -1,20 +1,20 @@
 ---
+- name: update apt package
+  apt:
+  update_cache: yes
+
+- name: Install the package "java 21"
+  ansible.builtin.apt:
+    name: openjdk-21-jre
+    state: present
+
+
+
 - name: update apt package 
-    apt:
-    update_cache: yes
+  apt:
+  update_cache: yes
 
-  - name: Install the package "java 21"
-    ansible.builtin.apt:
-      name: openjdk-21-jre
-      state: present
-
-
-
-  - name: update apt package 
-    apt:
-    update_cache: yes
-
-  - name: instal jenkins 
-    ansible.builtin.apt:
-      name: jenkins
-      state: present
+- name: instal jenkins 
+  ansible.builtin.apt:
+    name: jenkins
+    state: present
