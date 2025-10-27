@@ -1,6 +1,7 @@
 ---
 - name: install and configure nginx
-  nginx_user: www-data
+  vars:
+    nginx_user: www-data
   hosts: web
   become: true
   tasks:
