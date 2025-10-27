@@ -1,6 +1,7 @@
- ---
+---
 - name: install and configure nginx
-  hosts: web
+  hosts: db
   become: true
   roles:
     - nginx
+    - jenkins

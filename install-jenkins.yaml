@@ -39,5 +39,4 @@
     
     - name: Display admin pwd
       ansible.builtin.debug:
-        msg: "intall Admin password {{ admin_password.stdout }}"
-
+        msg: "install Admin password {{ admin_password.stdout }}"
