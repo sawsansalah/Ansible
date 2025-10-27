@@ -3,7 +3,7 @@
 {% endmacro %}
 user  {{ nginx_user | default('www-data') }};
 
-error_log  {{ nginx_error_log }};
+error_log  {{ nginx_error_log | default('/var/log/nginx/error.log') }};
 pid        {{ nginx_pidfile }};
 
 {% block worker %}
