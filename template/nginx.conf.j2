@@ -1,7 +1,7 @@
 {% macro sslconf(config) %}
 {% include './templates/snippets/' ~ 'ssl_{}.conf.j2'.format(config) %}
 {% endmacro %}
-user  {{ nginx_user }};
+user  {{ nginx_user | default('www-data') }};
 
 error_log  {{ nginx_error_log }};
 pid        {{ nginx_pidfile }};
