@@ -1,0 +1,22 @@
+---
+- name: install and config nginx
+  hosts: web
+  become: yes
+  tasks:
+      - name: Install nginx
+        ansible.builtin.apt:
+          name: nginx
+          state: present
+
+      - name: copy nginx config file
+        ansible.builtin.copy:
+        template:
+          src: nginx.conf.j2
+          dest: /etc/nginx/nginx.conf
+        notify: restart nginx  
+# handler
+  handler:
+    - name: restart nginx  
+      service:
+        name: nginx
+        state: restarted

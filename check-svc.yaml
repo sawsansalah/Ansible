@@ -1,0 +1,13 @@
+---
+- name: check jenkins service
+  hosts: web
+  become: true
+  tasks:
+   - name: get jenkins status
+     command: systemctl is-active jenkins 
+     register: jenkins_status
+
+   - name: show jenkins status   
+     debug:
+       msg: "jenkins is active and running"
+       when: jenkins_status.stdout == "active"

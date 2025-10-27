@@ -1,0 +1,12 @@
+---
+- name: Example of register and debug
+  hosts: all
+  become: yes
+  tasks:
+    - name : check disk space
+      command: df -h
+      register: disk_info
+    
+    - name: show the result
+      debug:
+        var: disk_info.stdout
